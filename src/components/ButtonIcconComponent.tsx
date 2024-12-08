@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import {
   StyleProp,
   TouchableOpacity,
@@ -25,10 +25,10 @@ const ButtonIcconComponent = (props: Props) => {
       style={[
         styles,
         {
-          backgroundColor: bgr ? bgr : appColors.gray1,
-          borderRadius: border ? border : 15,
-          height: height ? height : 50,
-          width: width ? width : 50,
+          backgroundColor: bgr ?? appColors.gray1,
+          borderRadius: border ?? 15,
+          height: height ?? 50,
+          width: width ?? 50,
           justifyContent: 'center',
           alignItems: 'center'
         }
