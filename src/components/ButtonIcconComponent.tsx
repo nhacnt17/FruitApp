@@ -7,9 +7,9 @@ import {
 import { appColors } from '../constants/appColors'
 
 interface Props {
-  icon?: React.JSX.Element
+  icon?: ReactNode
   bgr?: string
-  border?: string
+  border?: number
   onPrees?: () => (void)
   styles?: StyleProp<ViewStyle>;
   height?: number

@@ -14,19 +14,28 @@ interface Props {
   | 'space-around'
   | 'space-evenly'
   | undefined;
+  alignItems?:
+  | 'center'
+  | 'flex-start'
+  | 'flex-end'
+  | 'stretch'
+  | 'baseline'
+  | undefined;
   styles?: StyleProp<ViewStyle>;
   children: ReactNode;
 }
 
 const RowComponent = (props: Props) => {
-  const { styles, justify, children, } = props;
+  const { styles, justify, children, alignItems } = props;
 
   return (
     <View style={
       [
         styles,
         {
-          justifyContent: justify ?? 'center',
+          flexDirection: 'row',
+          justifyContent: justify ?? 'flex-start',
+          alignItems: alignItems ?? 'center'
         }
       ]}>
       {children}

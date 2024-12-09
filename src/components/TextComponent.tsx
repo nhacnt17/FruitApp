@@ -10,14 +10,15 @@ interface Props {
   styles?: StyleProp<ViewStyle>
   fontFamily?: string
   type?: | 'type' | 'type1' | 'type2' | undefined
+  center?: boolean
 }
 
 const TextComponent = (props: Props) => {
-  const { color, text, fontSize, fontFamily, styles, type, } = props
+  const { color, text, fontSize, fontFamily, styles, type, center } = props
 
   const typeStyles = {
-    type: { fontSize: fontSize ?? 16, color: color ?? appColors.gray4, fontFamily: fontFamily ?? appFonts.Medium },
-    type1: { fontSize: fontSize ?? 14, color: color ?? appColors.gray3, fontFamily: fontFamily ?? appFonts.Medium },
+    type: { fontSize: fontSize ?? 16, color: color ?? appColors.gray4, fontFamily: fontFamily ?? appFonts.Medium, },
+    type1: { fontSize: fontSize ?? 12, color: color ?? appColors.gray3, fontFamily: fontFamily ?? appFonts.Medium },
     type2: { fontSize: fontSize ?? 20, color: color ?? appColors.black2, fontFamily: fontFamily ?? appFonts.SemiBold },
   };
 
@@ -27,6 +28,7 @@ const TextComponent = (props: Props) => {
     <Text style={[
       styles,
       dynamicStyle,
+      center ? { textAlign: 'center' } : {}, 
     ]}>
       {text}
     </Text>
