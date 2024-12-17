@@ -63,10 +63,9 @@ export default ItemVerticalComponent
 const styles = StyleSheet.create({
   container: {
     height: 220,
-    width: '42.5%',
+    width: '47%',
     backgroundColor: appColors.white,
-    marginLeft:'5%',
-    marginBottom:'4%',
+    marginBottom:'5%',
     borderRadius: 20,
     // Shadow cho iOS
     shadowColor: '#000',

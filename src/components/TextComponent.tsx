@@ -29,6 +29,9 @@ const TextComponent = (props: Props) => {
       styles,
       dynamicStyle,
       center ? { textAlign: 'center' } : {}, 
+      {
+        flex: 0,
+      }
     ]}>
       {text}
     </Text>
