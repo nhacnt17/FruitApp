@@ -1,4 +1,5 @@
 import ButtonIcconComponent from "./ButtonIcconComponent";
+import HearderComponent from "./HearderComponent";
 import ItemVerticalComponent from "./ItemVerticalComponent";
 import RowComponent from "./RowComponent";
 import SpaceComponent from "./SpaceComponent";
@@ -9,6 +10,7 @@ export {
     RowComponent,
     SpaceComponent,
     TextComponent,
-    ItemVerticalComponent
+    ItemVerticalComponent,
+    HearderComponent
 };
 

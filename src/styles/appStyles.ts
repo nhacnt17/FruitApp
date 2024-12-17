@@ -11,5 +11,10 @@ export const appStyles = StyleSheet.create({
         flex: 1,
         backgroundColor: appColors.white,
         margin: 16
+    },
+
+    center: {
+        justifyContent: 'center',
+        alignItems: 'center',
     }
 })

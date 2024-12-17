@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Tạo một instance của axios
 const axiosInstance = axios.create({
-  baseURL: 'http://172.26.116.30:3000',  // chạy máy thật thay địa chỉ IP WF
+  baseURL: 'http://192.168.201.61:3000',  // chạy máy thật thay địa chỉ IP WF
   timeout: 10000, 
   headers: {
     'Content-Type': 'application/json', 

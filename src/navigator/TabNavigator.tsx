@@ -1,25 +1,21 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import CartNavigator from './CartNavigator';
-import FavouriteNavigator from './FavouriteNavigator';
-import HomeNavigator from './HomeNavigator';
-import ProfileNavigator from './ProfileNavigator';
-import SearchNavigator from './SearchNavigator';
+import { CartScreen, FavouriteScreen, HomeScreen, ProfileScreen, SearchScreen } from '../screens';
 
 const TabNavigator = () => {
   const Tab = createBottomTabNavigator();
   return (
     <Tab.Navigator
-      initialRouteName='HomeNavigator'
+      initialRouteName='HomeScreen'
       screenOptions={{
         headerShown: false
       }}
     >
-      <Tab.Screen name='SearchNavigator' component={SearchNavigator} />
-      <Tab.Screen name='ProfileNavigator' component={ProfileNavigator} />
-      <Tab.Screen name='HomeNavigator' component={HomeNavigator} />
-      <Tab.Screen name='FavouriteNavigator' component={FavouriteNavigator} />
-      <Tab.Screen name='CartNavigator' component={CartNavigator} />
+      <Tab.Screen name='SearchScreen' component={SearchScreen} />
+      <Tab.Screen name='ProfileScreen' component={ProfileScreen} />
+      <Tab.Screen name='HomeScreen' component={HomeScreen} />
+      <Tab.Screen name='FavouriteScreen' component={FavouriteScreen} />
+      <Tab.Screen name='CartScreen' component={CartScreen} />
     </Tab.Navigator>
   )
 }

@@ -1,19 +1,17 @@
-import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import { SafeAreaView, StatusBar } from 'react-native';
-import { TabNavigator } from './src/navigator';
+import { MainStack } from './src/navigator';
+import { appStyles } from './src/styles/appStyles';
 
 const App = () => {
   return (
-    <SafeAreaView style={{ flex: 1}}>
+    <SafeAreaView style={appStyles.container}>
       <StatusBar
         barStyle="dark-content"
         translucent={true} 
         backgroundColor="transparent" 
       />
-      <NavigationContainer>
-        <TabNavigator/>
-      </NavigationContainer>
+     <MainStack/>
     </SafeAreaView>
   );
 };

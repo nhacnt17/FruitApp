@@ -1,16 +1,8 @@
-import CartNavigator from "./CartNavigator";
-import FavouriteNavigator from "./FavouriteNavigator";
-import HomeNavigator from "./HomeNavigator";
-import ProfileNavigator from "./ProfileNavigator";
-import SearchNavigator from "./SearchNavigator";
+import MainStack from "./MainStack";
 import TabNavigator from "./TabNavigator";
 
 export {
-    CartNavigator,
-    FavouriteNavigator,
-    HomeNavigator,
-    ProfileNavigator,
-    SearchNavigator,
+    MainStack,
     TabNavigator
 };
 

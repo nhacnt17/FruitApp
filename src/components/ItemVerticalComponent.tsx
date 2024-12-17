@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import { Image, StyleSheet, View } from 'react-native'
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { appColors } from '../constants/appColors'
 import TextComponent from './TextComponent'
 import RowComponent from './RowComponent'
@@ -14,14 +14,19 @@ interface Props {
   priceProduct?: string
   iconCart?: ReactNode
   units?: | 'kg' | 'L'
+  onPrees?: () => (void)
+  onPreesbtn?: () => (void)
+
 }
 
 const ItemVerticalComponent = (props: Props) => {
 
-  const { iconCart, linkIMG, priceProduct, textProduct, groupProduct, units } = props
+  const { iconCart, linkIMG, priceProduct, textProduct, groupProduct, units, onPrees, onPreesbtn } = props
 
   return (
+    
     <View style={styles.container}>
+      <TouchableOpacity onPress={onPrees}>
       <View style={styles.viewImg}>
         <Image
           source={require('../assets/images/nho.png')}
@@ -42,10 +47,13 @@ const ItemVerticalComponent = (props: Props) => {
           }
 
           <SpaceComponent flex={1} />
-          <ButtonIcconComponent border={50} height={35} width={35}
+          <ButtonIcconComponent 
+          onPrees={onPreesbtn}
+          border={50} height={35} width={35}
             icon={<Add size={24} />} />
         </RowComponent>
       </View>
+      </TouchableOpacity>
     </View>
   )
 }
