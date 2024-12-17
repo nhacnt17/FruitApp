@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView, Text, View, FlatList, StyleSheet, Image, TextInput } from 'react-native';
-import DeviceInfo from 'react-native-device-info';
-import axios from 'axios';
-import { ButtonIcconComponent, HearderComponent, RowComponent, SpaceComponent, TextComponent } from '../../components';
-import { appStyles } from '../../styles/appStyles';
-import axiosInstance from '../../apiServices/api';
-import { appSize } from '../../constants/appSize';
 import { Add, Minus } from 'iconsax-react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, Image, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
+import axiosInstance from '../../apiServices/api';
+import { ButtonIcconComponent, RowComponent, SpaceComponent, TextComponent } from '../../components';
 import { appColors } from '../../constants/appColors';
+import { appSize } from '../../constants/appSize';
+import { appStyles } from '../../styles/appStyles';
 
 const CartScreen = ({ deviceId, productId, initialQuantity }: any) => {
   const [cartItems, setCartItems] = useState([]);
