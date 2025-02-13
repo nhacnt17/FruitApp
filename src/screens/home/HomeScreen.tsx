@@ -110,7 +110,7 @@ const HomeScreen = ({ navigation }: any) => {
         {
           data.length === 0 ? (
             <View style={appStyles.center}>
-              <Text style={{ textAlign: 'center' }}>Đéo có data</Text>
+              <Text style={{ textAlign: 'center' }}>There are no products yet</Text>
             </View>
           ) : loading ? (
             <View style={appStyles.center}>

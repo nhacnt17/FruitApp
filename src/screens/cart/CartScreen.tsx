@@ -1,5 +1,6 @@
+import { useFocusEffect } from '@react-navigation/core';
 import { Add, Minus } from 'iconsax-react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { FlatList, Image, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import axiosInstance from '../../apiServices/api';
@@ -8,62 +9,47 @@ import { appColors } from '../../constants/appColors';
 import { appSize } from '../../constants/appSize';
 import { appStyles } from '../../styles/appStyles';
 
-const CartScreen = ({ deviceId, productId, initialQuantity }: any) => {
-  const [cartItems, setCartItems] = useState([]);
+const CartScreen = () => {
+  const [cartItems, setCartItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [number, setNumber] = useState(1); // Khởi tạo giá trị dạng chuỗi
-  const [quantity, setQuantity] = useState(initialQuantity);
 
+  useFocusEffect(
+    useCallback(() => {
+      const fetchCart = async () => {
+        try {
+          const deviceId = await DeviceInfo.getUniqueId();
+          const response = await axiosInstance.get('/cart/get-list', { params: { deviceId } });
+          setCartItems(response.data.cart);
+        } catch (error) {
+          console.error('Error fetching cart:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchCart();
+    }, [])
+  );
 
-
-  useEffect(() => {
-    const fetchCart = async () => {
-      try {
-        const deviceId = await DeviceInfo.getUniqueId();
-
-        const items = await axiosInstance.get('/cart/get-list', {
-          params: { deviceId },
-        });
-
-        console.log('Response:', items.data); // Log dữ liệu phản hồi
-        setCartItems(items.data.cart);
-
-      } catch (error) {
-        console.error('Error fetching cart items:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCart();
-  }, [],);
-
-
-  const increaseQuantity = async () => {
+  // Hàm cập nhật số lượng
+  const handleQuantityChange = async (itemId: string, newQuantity: number) => {
     try {
-      const response = await axiosInstance.post('/cart/increase-quantity', {
+      setCartItems((prevItems) =>
+        prevItems.map((item) =>
+          item.product.id === itemId ? { ...item, quantity: newQuantity } : item
+        )
+      );
+
+      const deviceId = await DeviceInfo.getUniqueId();
+      await axiosInstance.post('/cart/pushCart', {
         deviceId,
-        productId,
+        productId: itemId,
+        quantity: newQuantity,
       });
-      if (response.status === 200) {
-        setQuantity((prevQuantity: number) => prevQuantity + 1);
-      }
     } catch (error) {
-      console.error('Error increasing quantity:');
+      console.error('Error updating cart:', error);
     }
   };
 
-  const decreaseQuantity = async () => {
-      const response = await axiosInstance.post('cart/decrease-quantity', {
-        deviceId,
-        productId,
-      });
-      if (response.status === 200) {
-        setQuantity((prevQuantity: number) => prevQuantity - 1);
-      }
-    }
-
-
-  // Hiển thị loader nếu đang tải dữ liệu
   if (loading) {
     return (
       <SafeAreaView style={appStyles.container}>
@@ -77,48 +63,41 @@ const CartScreen = ({ deviceId, productId, initialQuantity }: any) => {
       <View style={appStyles.content}>
         <SpaceComponent height={16} />
         <Text style={styles.title}>Cart Items</Text>
+
         {cartItems.length === 0 ? (
           <Text style={styles.emptyText}>Your cart is empty.</Text>
         ) : (
           <FlatList
-            extraData={cartItems} // Đảm bảo FlatList theo dõi thay đổi trong state
             data={cartItems}
-            keyExtractor={(item: any) => item.id}
+            keyExtractor={(item) => item.product.id}
             renderItem={({ item }) => (
               <View style={styles.itemContainer}>
-                <Image
-                  source={require('../../assets/images/nho.png')}
-                  style={{ width: appSize.wid * 0.2, height: appSize.hei * 0.15, }}
-                />
+                <Image source={require('../../assets/images/nho.png')} style={styles.image} />
                 <SpaceComponent width={16} />
-
-                <View style={{ justifyContent: 'center', flex: 1 }}>
-                  <TextComponent text={item.product.name} type='type2' fontSize={16} />
-                  <TextComponent text={item.product.group} type='type1' />
+                <View style={{ flex: 1 }}>
+                  <TextComponent text={item?.product?.name} type="type2" fontSize={14} />
+                  <TextComponent text={item?.product?.group} type="type1" />
                   <SpaceComponent height={appSize.hei * 0.03} />
-                  <RowComponent alignItems='flex-start'>
-                    <TextComponent text={item.product.price} type='type2' fontSize={16} color='#ff6600' />
-                    <Text> /kg</Text>
+                  <RowComponent>
+                    <TextComponent text={`${item?.product?.price} /kg`} type="type2" fontSize={16} color="#ff6600" />
                   </RowComponent>
                 </View>
 
                 <View>
-
-                  {/* Nút trừ */}
                   <ButtonIcconComponent
-                    onPrees={decreaseQuantity}
+                    border={10}
+                    width={35}
+                    height={35}
+                    onPrees={() => handleQuantityChange(item?.product?.id, Math.max(item.quantity - 1, 0))}
                     bgr="#fff"
                     icon={<Minus size={22} color={appColors.gray3} />}
                   />
-                  {/* Text */}
-                  <TextComponent styles={{ width: 40 }}
-                    center
-                    type='type'
-                    text={(item.quantity)}
-                  />
-                  {/* Nút cộng */}
+                  <TextComponent styles={{ width: 35 }} center type="type" fontSize={14} text={`${item.quantity}`} />
                   <ButtonIcconComponent
-                    onPrees={increaseQuantity}
+                    border={10}
+                    width={35}
+                    height={35}
+                    onPrees={() => handleQuantityChange(item?.product?.id, item.quantity + 1)}
                     bgr="#fff"
                     icon={<Add size={22} color="#FF6600" />}
                   />
@@ -135,34 +114,35 @@ const CartScreen = ({ deviceId, productId, initialQuantity }: any) => {
 
 export default CartScreen;
 
-
 const styles = StyleSheet.create({
-  loadingText: { 
-    textAlign: 'center', 
-    fontSize: 18, 
+  loadingText: {
+    textAlign: 'center',
+    fontSize: 18,
     marginTop: 20
-   },
-
-  title: { 
-    fontSize: 24, 
-    fontWeight: 'bold', 
-    marginBottom: 10 
   },
 
-  emptyText: { 
-    fontSize: 16, 
-    fontStyle: 'italic', 
-    color: 'gray' },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10
+  },
+
+  emptyText: {
+    fontSize: 16,
+    fontStyle: 'italic',
+    color: 'gray'
+  },
 
   itemContainer: {
     flexDirection: 'row',
     backgroundColor: '#f9f9f9',
     padding: 10,
     marginVertical: 5,
-    borderRadius: 5,
+    borderRadius: 5
   },
-
-  itemText: { 
-    fontSize: 16 
+  
+  image: {
+    width: appSize.wid * 0.15,
+    height: appSize.hei * 0.10
   },
 });
