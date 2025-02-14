@@ -3,12 +3,12 @@ import { CloseSquare } from 'iconsax-react-native';
 import React, { useCallback, useState } from 'react';
 import { FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+import Toast from 'react-native-toast-message';
 import axiosInstance from '../../apiServices/api';
-import { ButtonIcconComponent, RowComponent, SpaceComponent, TextComponent } from '../../components';
+import { ButtonIconComponent, RowComponent, SpaceComponent, TextComponent } from '../../components';
 import { appColors } from '../../constants/appColors';
 import { appSize } from '../../constants/appSize';
 import { appStyles } from '../../styles/appStyles';
-import Toast from 'react-native-toast-message';
 
 const FavouriteScreen = () => {
   const navigation = useNavigation();
@@ -83,7 +83,7 @@ const FavouriteScreen = () => {
               >
                 <View style={styles.itemContainer2}>
                   <View style={styles.itemContainer}>
-                    <ButtonIcconComponent
+                    <ButtonIconComponent
                       border={10}
                       width={35}
                       height={35}

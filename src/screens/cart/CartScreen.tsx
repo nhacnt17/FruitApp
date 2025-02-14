@@ -4,7 +4,7 @@ import React, { useCallback, useState } from 'react';
 import { FlatList, Image, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import axiosInstance from '../../apiServices/api';
-import { ButtonIcconComponent, RowComponent, SpaceComponent, TextComponent } from '../../components';
+import { ButtonIconComponent, RowComponent, SpaceComponent, TextComponent } from '../../components';
 import { appColors } from '../../constants/appColors';
 import { appSize } from '../../constants/appSize';
 import { appStyles } from '../../styles/appStyles';
@@ -89,7 +89,7 @@ const CartScreen = () => {
                 </View>
 
                 <View>
-                  <ButtonIcconComponent
+                  <ButtonIconComponent
                     border={10}
                     width={35}
                     height={35}
@@ -98,7 +98,7 @@ const CartScreen = () => {
                     icon={<Minus size={22} color={appColors.gray3} />}
                   />
                   <TextComponent styles={{ width: 35 }} center type="type" fontSize={14} text={`${item.quantity}`} />
-                  <ButtonIcconComponent
+                  <ButtonIconComponent
                     border={10}
                     width={35}
                     height={35}
@@ -121,7 +121,7 @@ const CartScreen = () => {
           <TextComponent color={appColors.primary} fontSize={20} type='type2' text={totalPrice.toLocaleString()} />
         </RowComponent>
         <SpaceComponent height={16} />
-        <ButtonIcconComponent
+        <ButtonIconComponent
           bgr="#ff6600"
           height={55}
           width={appSize.wid - 32}

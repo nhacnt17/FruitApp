@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
-import ButtonIcconComponent from './ButtonIcconComponent';
-import { ArrowLeft2, Heart } from 'iconsax-react-native';
-import { appColors } from '../constants/appColors';
 import { useNavigation } from '@react-navigation/native';
+import { ArrowLeft2, Heart } from 'iconsax-react-native';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { appColors } from '../constants/appColors';
+import ButtonIconComponent from './ButtonIconComponent';
 
 interface Props {
     title?: string;
@@ -13,13 +13,13 @@ const HearderComponent = ({ title }: Props) => {
     const navigation = useNavigation();
     return (
         <View style={styles.container}>
-            <ButtonIcconComponent
+            <ButtonIconComponent
                 height={45}
                 icon={<ArrowLeft2 size="24" color={appColors.black} />}
                 onPrees={() => navigation.goBack()} 
             />
             <Text style={styles.title}>{title}</Text>
-            <ButtonIcconComponent
+            <ButtonIconComponent
                 height={45}
                 icon={<Heart size="24" color={appColors.black} />}
                 // onPrees={() => navigation.goBack()} 

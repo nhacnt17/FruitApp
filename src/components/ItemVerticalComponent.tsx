@@ -1,11 +1,11 @@
+import { Heart } from 'iconsax-react-native'
 import React, { ReactNode } from 'react'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { appColors } from '../constants/appColors'
-import TextComponent from './TextComponent'
+import ButtonIconComponent from './ButtonIconComponent'
 import RowComponent from './RowComponent'
 import SpaceComponent from './SpaceComponent'
-import ButtonIcconComponent from './ButtonIcconComponent'
-import { Add, Heart, HeartAdd } from 'iconsax-react-native'
+import TextComponent from './TextComponent'
 
 interface Props {
   linkIMG?: string
@@ -48,7 +48,7 @@ const ItemVerticalComponent = (props: Props) => {
                 : <TextComponent text=' /Kg' type='type1' fontSize={14} />
             }
             <SpaceComponent flex={1} />
-            <ButtonIcconComponent
+            <ButtonIconComponent
               onPrees={onPreesbtn}
               border={50} height={35} width={35}
               icon={

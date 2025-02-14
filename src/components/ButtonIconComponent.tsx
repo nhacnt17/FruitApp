@@ -15,7 +15,7 @@ interface Props {
   height?: number
   width?: number
 }
-const ButtonIcconComponent = (props: Props) => {
+const ButtonIconComponent = (props: Props) => {
 
   const { bgr, border, icon, onPrees, styles, height, width } = props
 
@@ -38,4 +38,4 @@ const ButtonIcconComponent = (props: Props) => {
   )
 }
 
-export default ButtonIcconComponent
+export default ButtonIconComponent

@@ -1,17 +1,17 @@
+import { useFocusEffect } from '@react-navigation/core'
 import { NotificationBing, SearchNormal1 } from 'iconsax-react-native'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import Toast from 'react-native-toast-message'
 import axiosInstance from '../../apiServices/api'
-import { ButtonIcconComponent, ItemVerticalComponent, RowComponent, SpaceComponent, TextComponent } from '../../components'
+import { ButtonIconComponent, ItemVerticalComponent, RowComponent, SpaceComponent, TextComponent } from '../../components'
 import CategoriesComponent from '../../components/CategoriesComponent'
+import { appColors } from '../../constants/appColors'
 import { appFonts } from '../../constants/appFonts'
 import { appSize } from '../../constants/appSize'
 import { appStyles } from '../../styles/appStyles'
-import { appColors } from '../../constants/appColors'
-import Toast from 'react-native-toast-message'
-import { useFocusEffect } from '@react-navigation/core'
 
 const HomeScreen = ({ navigation }: any) => {
 
@@ -99,7 +99,7 @@ const HomeScreen = ({ navigation }: any) => {
     }, [])
   );
 
-  
+
   return (
     <SafeAreaView style={appStyles.container}>
       <ScrollView>
@@ -112,7 +112,7 @@ const HomeScreen = ({ navigation }: any) => {
               <TextComponent text='Nguyen Nhac' type='type2' />
             </View>
             <SpaceComponent flex={1} />
-            <ButtonIcconComponent
+            <ButtonIconComponent
               height={45}
               width={45}
               icon={<NotificationBing size="24" color="#000000" />}

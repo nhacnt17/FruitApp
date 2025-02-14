@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Image, ScrollView, View } from 'react-native'
 import { appColors } from '../constants/appColors'
 import { appFonts } from '../constants/appFonts'
-import ButtonIcconComponent from './ButtonIcconComponent'
+import ButtonIconComponent from './ButtonIconComponent'
 import SpaceComponent from './SpaceComponent'
 import TextComponent from './TextComponent'
 
@@ -56,7 +56,7 @@ const CategoriesComponent = (props: Props) => {
     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
       {categories.map((category) => (
         <View style={{ alignItems: 'center' }} key={category.id}>
-          <ButtonIcconComponent
+          <ButtonIconComponent
             onPrees={() => {
               setActive(category.name) 
             }}

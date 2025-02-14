@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, StyleSheet, View, Text } from 'react-native';
-import Toast from 'react-native-toast-message';
-import { ButtonIcconComponent, RowComponent, SpaceComponent, TextComponent } from '../../components';
-import { appStyles } from '../../styles/appStyles';
-import { appColors } from '../../constants/appColors';
-import { Add, ArrowLeft2, Heart, Minus } from 'iconsax-react-native';
-import { appSize } from '../../constants/appSize';
-import axiosInstance from '../../apiServices/api';
-import DeviceInfo from 'react-native-device-info';
 import { useNavigation } from '@react-navigation/core';
+import { Add, ArrowLeft2, Heart, Minus } from 'iconsax-react-native';
+import React, { useEffect, useState } from 'react';
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
+import Toast from 'react-native-toast-message';
+import axiosInstance from '../../apiServices/api';
+import { ButtonIconComponent, RowComponent, SpaceComponent, TextComponent } from '../../components';
+import { appColors } from '../../constants/appColors';
+import { appSize } from '../../constants/appSize';
+import { appStyles } from '../../styles/appStyles';
 
 const DetailScreen = ({ route }: any) => {
   const { id } = route.params;
@@ -136,13 +136,13 @@ const DetailScreen = ({ route }: any) => {
           <SpaceComponent height={16} />
 
           <View style={styles.containerHearder}>
-            <ButtonIcconComponent
+            <ButtonIconComponent
               height={45}
               icon={<ArrowLeft2 size="24" color={appColors.black} />}
               onPrees={() => navigation.goBack()}
             />
             <Text style={styles.titleHearder}>Detail</Text>
-            <ButtonIcconComponent
+            <ButtonIconComponent
               height={45}
               onPrees={() => handleAddToFavourite(id)}
               icon={
@@ -168,13 +168,13 @@ const DetailScreen = ({ route }: any) => {
                 <TextComponent text={dataDetail?.price} type="type2" fontSize={16} color="#FF6600" />
               </View>
               <View style={styles.quantityContainer}>
-                <ButtonIcconComponent
+                <ButtonIconComponent
                   onPrees={() => setNumber(Math.max(number - 1, 1))}
                   bgr="#fff"
                   icon={<Minus size={22} color={appColors.gray3} />}
                 />
                 <TextComponent styles={{ width: 40 }} center type="type" text={String(number)} />
-                <ButtonIcconComponent
+                <ButtonIconComponent
                   onPrees={() => setNumber(Math.min(number + 1, 100))}
                   bgr="#fff"
                   icon={<Add size={22} color="#FF6600" />}
@@ -184,7 +184,7 @@ const DetailScreen = ({ route }: any) => {
           </View>
           <SpaceComponent height={appSize.hei * 0.2} />
 
-          <ButtonIcconComponent
+          <ButtonIconComponent
             bgr="#ff6600"
             height={55}
             width={appSize.wid - 32}
