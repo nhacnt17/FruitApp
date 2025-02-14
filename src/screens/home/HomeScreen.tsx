@@ -1,5 +1,5 @@
 import { NotificationBing, SearchNormal1 } from 'iconsax-react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -11,6 +11,7 @@ import { appSize } from '../../constants/appSize'
 import { appStyles } from '../../styles/appStyles'
 import { appColors } from '../../constants/appColors'
 import Toast from 'react-native-toast-message'
+import { useFocusEffect } from '@react-navigation/core'
 
 const HomeScreen = ({ navigation }: any) => {
 
@@ -91,12 +92,14 @@ const HomeScreen = ({ navigation }: any) => {
   };
 
 
-  useEffect(() => {
-    fetchData('fruit');
-    loadFavourites();
-  }, [])
+  useFocusEffect(
+    useCallback(() => {
+      fetchData('fruit');
+      loadFavourites();
+    }, [])
+  );
 
-
+  
   return (
     <SafeAreaView style={appStyles.container}>
       <ScrollView>

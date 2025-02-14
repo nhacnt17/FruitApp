@@ -1,19 +1,43 @@
-import { useFocusEffect } from '@react-navigation/core';
+import { useFocusEffect, useNavigation } from '@react-navigation/core';
 import { CloseSquare } from 'iconsax-react-native';
 import React, { useCallback, useState } from 'react';
-import { FlatList, Image, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import axiosInstance from '../../apiServices/api';
 import { ButtonIcconComponent, RowComponent, SpaceComponent, TextComponent } from '../../components';
 import { appColors } from '../../constants/appColors';
 import { appSize } from '../../constants/appSize';
 import { appStyles } from '../../styles/appStyles';
+import Toast from 'react-native-toast-message';
 
 const FavouriteScreen = () => {
+  const navigation = useNavigation();
   const [cartItems, setCartItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  
+
+  const handleRemoveFavourite = async (productId: number) => {
+    try {
+      const deviceId = await DeviceInfo.getUniqueId();
+      if (!deviceId) return;
+      const body = { deviceId, productId };
+      const deleteResponse = await axiosInstance.delete(`/favourites/remove`, { data: body });
+      if (deleteResponse.status === 200) {
+        setCartItems(prev => prev.filter(item => item.product.id !== productId));
+      }
+    } catch (error) {
+      console.error('Lỗi khi xóa sản phẩm:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Lỗi',
+        text2: 'Không thể xóa sản phẩm.',
+        position: 'top',
+        visibilityTime: 2000,
+      });
+    }
+  };
+
+
   useFocusEffect(
     useCallback(() => {
       const fetchCart = async () => {
@@ -54,28 +78,32 @@ const FavouriteScreen = () => {
             data={cartItems}
             keyExtractor={(item) => item?.product?.id?.toString() || Math.random().toString()}
             renderItem={({ item }) => (
-              <View style={styles.itemContainer2}>
-                <View style={styles.itemContainer}>
-                  <ButtonIcconComponent
-                    border={10}
-                    width={35}
-                    height={35}
-                    // onPrees={() => handleQuantityChange(item?.product?.id, item.quantity + 1)}
-                    bgr="#fff"
-                    icon={<CloseSquare size={22} color="#FF6600" />}
-                  />
-                  <SpaceComponent width={16} />
-                  <View style={{ flex: 1 }}>
-                    <TextComponent text={item?.product?.name} type="type2" fontSize={14} />
-                    <TextComponent text={item?.product?.group} type="type1" />
-                    <SpaceComponent height={appSize.hei * 0.03} />
-                    <RowComponent>
-                      <TextComponent text={`${item?.product?.price} /kg`} type="type2" fontSize={16} color="#ff6600" />
-                    </RowComponent>
+              <TouchableOpacity
+                onPress={() => (navigation as any).navigate('DetailScreen', { id: item.product.id })}
+              >
+                <View style={styles.itemContainer2}>
+                  <View style={styles.itemContainer}>
+                    <ButtonIcconComponent
+                      border={10}
+                      width={35}
+                      height={35}
+                      onPrees={() => handleRemoveFavourite(item.product.id)}
+                      bgr="#fff"
+                      icon={<CloseSquare size={22} color="#FF6600" />}
+                    />
+                    <SpaceComponent width={16} />
+                    <View style={{ flex: 1 }}>
+                      <TextComponent text={item?.product?.name} type="type2" fontSize={14} />
+                      <TextComponent text={item?.product?.group} type="type1" />
+                      <SpaceComponent height={appSize.hei * 0.03} />
+                      <RowComponent>
+                        <TextComponent text={`${item?.product?.price} /kg`} type="type2" fontSize={16} color="#ff6600" />
+                      </RowComponent>
+                    </View>
                   </View>
+                  <Image source={require('../../assets/images/nho.png')} style={styles.image} />
                 </View>
-                <Image source={require('../../assets/images/nho.png')} style={styles.image} />
-              </View>
+              </TouchableOpacity>
             )}
           />
         )}

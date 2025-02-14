@@ -16,6 +16,8 @@ const DetailScreen = ({ route }: any) => {
   const [dataDetail, setDataDetail] = useState<any>(null);
   const [number, setNumber] = useState(1);
   const [ischeckFavourites, setIscheckFavourites] = useState(Boolean);
+  const [favourites, setFavourites] = useState<number[]>([]);
+
 
 
   const fetchData = async () => {
@@ -24,6 +26,50 @@ const DetailScreen = ({ route }: any) => {
       setDataDetail(response.data);
     } catch (error) {
       console.error('Fetch Error:', error);
+    }
+  };
+
+  const handleAddToFavourite = async (productId: number) => {
+    try {
+      const deviceId = await DeviceInfo.getUniqueId();
+      if (!deviceId) return;
+      const body = { deviceId, productId };
+      const favResponse = await axiosInstance.get(`/favourites/check?deviceId=${deviceId}&productId=${productId}`);
+      if (favResponse.data.exists) {
+        const deleteResponse = await axiosInstance.delete(`/favourites/remove`, { data: body });
+        if (deleteResponse.status === 200) {
+          setFavourites(prev => prev.filter(id => id !== productId)); 
+          setIscheckFavourites(!ischeckFavourites)
+          Toast.show({
+            type: 'info',
+            text1: 'Thông báo',
+            text2: 'Sản phẩm đã bị xóa khỏi danh sách yêu thích.',
+            position: 'top',
+            visibilityTime: 2000,
+          });
+        }
+      } else {
+        const addResponse = await axiosInstance.post('/favourites/add', body);
+        if (addResponse.status === 201) {
+          setFavourites(prev => [...prev, productId]); 
+          setIscheckFavourites(!ischeckFavourites)
+          Toast.show({
+            type: 'success',
+            text1: 'Thành công',
+            text2: 'Sản phẩm đã được thêm vào yêu thích.',
+            position: 'top',
+            visibilityTime: 2000,
+          });
+        }
+      }
+    } catch (error: any) {
+      Toast.show({
+        type: 'error',
+        text1: 'Lỗi',
+        text2: 'Có lỗi xảy ra. Vui lòng thử lại.',
+        position: 'top',
+        visibilityTime: 2000,
+      });
     }
   };
 
@@ -98,6 +144,7 @@ const DetailScreen = ({ route }: any) => {
             <Text style={styles.titleHearder}>Detail</Text>
             <ButtonIcconComponent
               height={45}
+              onPrees={() => handleAddToFavourite(id)}
               icon={
                 ischeckFavourites
                   ? <Heart variant='Bold' size={24} color="#FF6600" />
