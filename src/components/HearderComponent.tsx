@@ -6,18 +6,17 @@ import { appColors } from '../constants/appColors';
 import { useNavigation } from '@react-navigation/native';
 
 interface Props {
-    title?: string; // Tiêu đề của header
+    title?: string;
 }
 
 const HearderComponent = ({ title }: Props) => {
-    const navigation = useNavigation(); // Lấy đối tượng navigation
-
+    const navigation = useNavigation();
     return (
         <View style={styles.container}>
             <ButtonIcconComponent
                 height={45}
                 icon={<ArrowLeft2 size="24" color={appColors.black} />}
-                onPrees={() => navigation.goBack()} // Quay lại màn hình trước
+                onPrees={() => navigation.goBack()} 
             />
             <Text style={styles.title}>{title}</Text>
             <ButtonIcconComponent

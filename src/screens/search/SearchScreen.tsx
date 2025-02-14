@@ -8,34 +8,35 @@ import { BagTick2 } from 'iconsax-react-native'
 import { appStyles } from '../../styles/appStyles'
 import DeviceInfo from 'react-native-device-info'
 
-const SearchScreen = ({navigation}: any) => {
+const SearchScreen = ({ navigation }: any) => {
   const [textinput, setTextInput] = useState("")
   const [data, setData] = useState([]);
   const [deviceId, setDeviceId] = useState('');
 
+  const fetchDeviceId = async () => {
+    const id = await DeviceInfo.getUniqueId();
+    setDeviceId(id);
+  };
+
 
   const fetchData = async () => {
     try {
-      //   setLoading(true);
       const response = await axiosInstance.get(`/product/get-list?name=${textinput}`);
       setData(response.data);
     } catch (error) {
       console.error('Fetch Error:', error);
-    } finally {
-      //   setLoading(false);
     }
   };
+
 
   const handleAddToCart = async (productId: number) => {
     try {
       const body = {
-        deviceId, // Đảm bảo giá trị này không rỗng
+        deviceId,
         productId,
         quantity: 1,
       };
-
-      console.log('Request body:', body); // Kiểm tra giá trị trước khi gửi
-
+      console.log('Request body:', body);
       const response = await axiosInstance.post('/cart/pushCart', body);
       console.log('Added to cart:', response.data);
     } catch (error) {
@@ -43,17 +44,11 @@ const SearchScreen = ({navigation}: any) => {
     }
   };
 
-  useEffect(() => {
-    fetchData()
-  }, [textinput]);
 
   useEffect(() => {
-    const fetchDeviceId = async () => {
-      const id = await DeviceInfo.getUniqueId(); // Lấy ID duy nhất của thiết bị
-      setDeviceId(id);
-    };
-    fetchDeviceId()
-  }, []);
+    fetchData();
+    fetchDeviceId();
+  }, [textinput]);
 
 
   return (
@@ -88,15 +83,9 @@ const SearchScreen = ({navigation}: any) => {
 
               <View style={appStyles.center}>
                 <ButtonIcconComponent
-                onPrees={() => handleAddToCart(item.id)}
+                  onPrees={() => handleAddToCart(item.id)}
                   bgr='#fff'
-                  icon={
-                    <BagTick2
-                      size="48"
-                      color="#FF8A65"
-                      variant="Bold"
-                    />
-                  }
+                  icon={<BagTick2 size="48" color="#FF8A65" variant="Bold" />}
                 />
               </View>
               <SpaceComponent width={16} />
@@ -108,9 +97,7 @@ const SearchScreen = ({navigation}: any) => {
   )
 }
 
-
 export default SearchScreen
-
 
 const styles = StyleSheet.create({
   loadingText: {

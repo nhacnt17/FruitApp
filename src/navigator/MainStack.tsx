@@ -9,13 +9,11 @@ const MainStack = () => {
   return (
      <NavigationContainer>
       <RootStack.Navigator>
-        {/* MainTabs sẽ chứa Tab Navigator */}
         <RootStack.Screen
           name="TabNavigator"
           component={TabNavigator}
           options={{ headerShown: false }}
         />
-
         <RootStack.Screen
           name="DetailScreen"
           component={DetailScreen}
@@ -36,6 +34,5 @@ const MainStack = () => {
     </NavigationContainer>
   );
 }
-
 
 export default MainStack

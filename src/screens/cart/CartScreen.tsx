@@ -11,7 +11,30 @@ import { appStyles } from '../../styles/appStyles';
 
 const CartScreen = () => {
   const [cartItems, setCartItems] = useState<any[]>([]);
+  const [totalPrice, setTotalPrice] = useState(0);
   const [loading, setLoading] = useState(true);
+
+
+
+
+  const handleQuantityChange = async (itemId: string, newQuantity: number) => {
+    try {
+      setCartItems((prevItems) =>
+        prevItems.map((item) =>
+          item.product.id === itemId ? { ...item, quantity: newQuantity } : item));
+      const deviceId = await DeviceInfo.getUniqueId();
+      await axiosInstance.post('/cart/pushCart', {
+        deviceId,
+        productId: itemId,
+        quantity: newQuantity,
+      });
+      const totalResponse = await axiosInstance.get('/cart/total-price', { params: { deviceId } });
+      setTotalPrice(totalResponse.data.totalPrice);
+    } catch (error) {
+      console.error('Error updating cart:', error);
+    }
+  };
+
 
   useFocusEffect(
     useCallback(() => {
@@ -20,6 +43,8 @@ const CartScreen = () => {
           const deviceId = await DeviceInfo.getUniqueId();
           const response = await axiosInstance.get('/cart/get-list', { params: { deviceId } });
           setCartItems(response.data.cart);
+          const totalResponse = await axiosInstance.get('/cart/total-price', { params: { deviceId } });
+          setTotalPrice(totalResponse.data.totalPrice);
         } catch (error) {
           console.error('Error fetching cart:', error);
         } finally {
@@ -30,25 +55,6 @@ const CartScreen = () => {
     }, [])
   );
 
-  // Hàm cập nhật số lượng
-  const handleQuantityChange = async (itemId: string, newQuantity: number) => {
-    try {
-      setCartItems((prevItems) =>
-        prevItems.map((item) =>
-          item.product.id === itemId ? { ...item, quantity: newQuantity } : item
-        )
-      );
-
-      const deviceId = await DeviceInfo.getUniqueId();
-      await axiosInstance.post('/cart/pushCart', {
-        deviceId,
-        productId: itemId,
-        quantity: newQuantity,
-      });
-    } catch (error) {
-      console.error('Error updating cart:', error);
-    }
-  };
 
   if (loading) {
     return (
@@ -63,7 +69,6 @@ const CartScreen = () => {
       <View style={appStyles.content}>
         <SpaceComponent height={16} />
         <Text style={styles.title}>Cart Items</Text>
-
         {cartItems.length === 0 ? (
           <Text style={styles.emptyText}>Your cart is empty.</Text>
         ) : (
@@ -108,6 +113,22 @@ const CartScreen = () => {
           />
         )}
       </View>
+
+      <View style={styles.footer}>
+        <RowComponent>
+          <TextComponent color={appColors.primary} fontSize={18} type='type1' text='Tổng tiền:' />
+          <SpaceComponent flex={1} />
+          <TextComponent color={appColors.primary} fontSize={20} type='type2' text={totalPrice.toLocaleString()} />
+        </RowComponent>
+        <SpaceComponent height={16} />
+        <ButtonIcconComponent
+          bgr="#ff6600"
+          height={55}
+          width={appSize.wid - 32}
+          // onPrees={addToCart}
+          icon={<TextComponent text="Thanh Toán" type="type2" fontSize={14} color="#fff" />}
+        />
+      </View>
     </SafeAreaView>
   );
 };
@@ -140,9 +161,24 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     borderRadius: 5
   },
-  
+
   image: {
     width: appSize.wid * 0.15,
     height: appSize.hei * 0.10
   },
+
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: appColors.primary2,
+    padding: 16,
+  },
+
+  totalText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#ff6600'
+  }
 });

@@ -1,6 +1,6 @@
 import { NotificationBing, SearchNormal1 } from 'iconsax-react-native'
 import React, { useEffect, useState } from 'react'
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import axiosInstance from '../../apiServices/api'
@@ -10,19 +10,20 @@ import { appFonts } from '../../constants/appFonts'
 import { appSize } from '../../constants/appSize'
 import { appStyles } from '../../styles/appStyles'
 import { appColors } from '../../constants/appColors'
+import Toast from 'react-native-toast-message'
 
 const HomeScreen = ({ navigation }: any) => {
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [deviceId, setDeviceId] = useState('');
+  const [favourites, setFavourites] = useState<number[]>([]);
+
 
   const fetchData = async (group: string) => {
     try {
       setLoading(true)
       const response = await axiosInstance.get(`/product/get-list?group=${group}`);
       setData(response.data);
-      // console.log('Thành công');
       setLoading(false)
     } catch (error) {
       console.error('Fetch Error:', error);
@@ -31,42 +32,75 @@ const HomeScreen = ({ navigation }: any) => {
     }
   };
 
-  const handleAddToCart = async (productId: number) => {
+
+  const loadFavourites = async () => {
     try {
-      const body = {
-        deviceId, // Đảm bảo giá trị này không rỗng
-        productId,
-        quantity: 1,
-      };
-
-      console.log('Request body:', body); // Kiểm tra giá trị trước khi gửi
-
-      const response = await axiosInstance.post('/cart/pushCart', body);
-      console.log('Added to cart:', response.data);
+      const deviceId = await DeviceInfo.getUniqueId();
+      if (!deviceId) return;
+      const response = await axiosInstance.get(`/favourites/get-list?deviceId=${deviceId}`);
+      if (response.data && response.data.favourites) {
+        const favouritesList = response.data.favourites.map((item: any) => item.product.id);
+        setFavourites(favouritesList);
+      }
     } catch (error) {
-      console.error('Add to cart error:', error);
+      console.error('Không thể tải danh sách yêu thích từ API', error);
+    }
+  };
+
+
+  const handleAddToFavourite = async (productId: number) => {
+    try {
+      const deviceId = await DeviceInfo.getUniqueId();
+      if (!deviceId) return;
+      const body = { deviceId, productId };
+      const favResponse = await axiosInstance.get(`/favourites/check?deviceId=${deviceId}&productId=${productId}`);
+      if (favResponse.data.exists) {
+        const deleteResponse = await axiosInstance.delete(`/favourites/remove`, { data: body });
+        if (deleteResponse.status === 200) {
+          setFavourites(prev => prev.filter(id => id !== productId)); // Remove from local state
+          Toast.show({
+            type: 'info',
+            text1: 'Thông báo',
+            text2: 'Sản phẩm đã bị xóa khỏi danh sách yêu thích.',
+            position: 'top',
+            visibilityTime: 2000,
+          });
+        }
+      } else {
+        const addResponse = await axiosInstance.post('/favourites/add', body);
+        if (addResponse.status === 201) {
+          setFavourites(prev => [...prev, productId]); // Add to local state
+          Toast.show({
+            type: 'success',
+            text1: 'Thành công',
+            text2: 'Sản phẩm đã được thêm vào yêu thích.',
+            position: 'top',
+            visibilityTime: 2000,
+          });
+        }
+      }
+    } catch (error: any) {
+      Toast.show({
+        type: 'error',
+        text1: 'Lỗi',
+        text2: 'Có lỗi xảy ra. Vui lòng thử lại.',
+        position: 'top',
+        visibilityTime: 2000,
+      });
     }
   };
 
 
   useEffect(() => {
-    fetchData('fruit')
+    fetchData('fruit');
+    loadFavourites();
   }, [])
-
-  useEffect(() => {
-    const fetchDeviceId = async () => {
-      const id = await DeviceInfo.getUniqueId(); // Lấy ID duy nhất của thiết bị
-      setDeviceId(id);
-    };
-    fetchDeviceId()
-  }, []);
 
 
   return (
     <SafeAreaView style={appStyles.container}>
       <ScrollView>
         <View style={appStyles.content}>
-
           <SpaceComponent height={10} />
 
           <RowComponent>
@@ -81,12 +115,9 @@ const HomeScreen = ({ navigation }: any) => {
               icon={<NotificationBing size="24" color="#000000" />}
             />
           </RowComponent>
-
           <SpaceComponent height={16} />
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate('SearchScreen')}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate('SearchScreen')}>
             <View style={styles.Search}>
               <SpaceComponent width={16} />
               <TextComponent text='Search product...' type='type1' center />
@@ -95,15 +126,18 @@ const HomeScreen = ({ navigation }: any) => {
               <SpaceComponent width={16} />
             </View>
           </TouchableOpacity>
-
           <SpaceComponent height={16} />
-          <SpaceComponent height={appSize.hei * 0.20} bgr='gray' />
+
+          <View style={{ height: appSize.hei * 0.18 }} >
+            <Image
+              source={require('../../assets/images/bannertraicau.jpg')}
+              style={{ height: appSize.hei * 0.18, width: appSize.wid - 32, }}
+            />
+          </View>
           <SpaceComponent height={16} />
 
           <TextComponent text='Categories' type='type' fontFamily={appFonts.Bold} />
-
           <SpaceComponent height={16} />
-
           <CategoriesComponent handelGetData={(data) => fetchData(data)} />
         </View>
 
@@ -120,12 +154,13 @@ const HomeScreen = ({ navigation }: any) => {
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginHorizontal: 16 }}>
               {data.map((item: any) => (
                 <ItemVerticalComponent
-                  key={item.id} // Thêm key để React nhận diện item duy nhất
-                  onPreesbtn={() => handleAddToCart(item.id)}
+                  key={item.id}
+                  onPreesbtn={() => handleAddToFavourite(item.id)}
                   onPrees={() => navigation.navigate('DetailScreen', { id: item.id })}
                   textProduct={item.name}
                   groupProduct={item.group}
                   priceProduct={item.price}
+                  isFavourite={favourites.includes(item.id)}
                 />
               ))}
             </View>
